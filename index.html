@@ -47,6 +47,12 @@
             letter-spacing: -0.5px;
         }
         
+        nav .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+        
         nav ul {
             display: flex;
             list-style: none;
@@ -79,6 +85,56 @@
         
         nav a:hover::after {
             width: 100%;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .btn-login, .btn-logout {
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login {
+            color: #0066cc;
+            background: transparent;
+            border: 2px solid #0066cc;
+        }
+        
+        .btn-login:hover {
+            background-color: #0066cc;
+            color: white;
+        }
+        
+        .btn-logout {
+            background-color: #0066cc;
+            color: white;
+        }
+        
+        .btn-logout:hover {
+            background-color: #0052a3;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #1a1a1a;
+        }
+        
+        .user-profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
         }
         
         .container {
@@ -599,6 +655,10 @@
             }
         }
         
+        .hidden {
+            display: none !important;
+        }
+        
         /* 반응형 */
         @media (max-width: 768px) {
             nav .container {
@@ -606,8 +666,7 @@
             }
             
             nav ul {
-                gap: 1.5rem;
-                font-size: 0.9rem;
+                display: none;
             }
             
             .container {
@@ -678,12 +737,22 @@
     <nav>
         <div class="container">
             <div class="logo">Jinwoong Choi</div>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
+            <div class="nav-menu">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="nav-buttons">
+                    <button id="loginBtn" class="btn-login" style="display: none;">로그인</button>
+                    <div id="userProfile" class="user-profile" style="display: none;">
+                        <img id="userImage" src="" alt="프로필">
+                        <span id="userName"></span>
+                        <button id="logoutBtn" class="btn-logout">로그아웃</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -961,7 +1030,64 @@
         <p>&copy; 2026 Jinwoong Choi. All rights reserved.</p>
     </footer>
 
+    <!-- Auth0 SDK -->
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/1.22/auth0-spa-js.production.js"></script>
+    
     <script>
+        // Auth0 설정
+        let auth0Client = null;
+
+        // Auth0 초기화
+        async function initAuth0() {
+            auth0Client = await auth0.createAuth0Client({
+                domain: 'YOUR_AUTH0_DOMAIN', // 예: xxx.us.auth0.com
+                client_id: 'YOUR_CLIENT_ID', // Auth0 Client ID
+                redirect_uri: window.location.origin + '/callback'
+            });
+
+            // URL에 code 파라미터가 있으면 로그인 처리
+            if (window.location.search.includes('code=')) {
+                await auth0Client.handleRedirectCallback();
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            // 사용자 정보 확인
+            await updateUI();
+        }
+
+        // UI 업데이트
+        async function updateUI() {
+            const isAuthenticated = await auth0Client.isAuthenticated();
+            const loginBtn = document.getElementById('loginBtn');
+            const userProfile = document.getElementById('userProfile');
+
+            if (isAuthenticated) {
+                const user = await auth0Client.getUser();
+                
+                loginBtn.style.display = 'none';
+                userProfile.style.display = 'flex';
+                
+                document.getElementById('userName').textContent = user.name || user.email;
+                document.getElementById('userImage').src = user.picture || 'https://via.placeholder.com/32';
+            } else {
+                loginBtn.style.display = 'block';
+                userProfile.style.display = 'none';
+            }
+        }
+
+        // 로그인
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            await auth0Client.loginWithPopup();
+            await updateUI();
+        });
+
+        // 로그아웃
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth0Client.logout({
+                returnTo: window.location.origin
+            });
+        });
+
         // 모달 열기
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'block';
@@ -991,6 +1117,9 @@
                 }
             });
         });
+
+        // Auth0 초기화
+        initAuth0().catch(console.error);
     </script>
 </body>
 </html>
