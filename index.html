@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>포트폴리오 - My Portfolio</title>
+    <!-- EmailJS 라이브러리 -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/index.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -345,6 +347,7 @@
             border-radius: 5px;
             font-family: inherit;
             font-size: 1rem;
+            transition: border-color 0.3s;
         }
         .contact-form input:focus,
         .contact-form textarea:focus {
@@ -365,10 +368,32 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.3s;
         }
         .contact-form button:hover {
             opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .contact-form button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        /* 메시지 알림 */
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            animation: slideInDown 0.3s ease;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
         /* 풋터 */
         footer {
@@ -427,6 +452,20 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+        /* 로딩 스피너 */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         /* 반응형 */
         @media (max-width: 768px) {
@@ -657,10 +696,10 @@
                 </ul>
                 <h3>성과 지표</h3>
                 <ul>
-                    <li>고객사당 평균 계약 규모 XX% 증가</li>
+                    <li>고객사당 평균 계약 규모 증가</li>
                     <li>고객 만족도(NPS) 향상</li>
-                    <li>고객 유지율 XX% 달성</li>
-                    <li>연도별 영업 목표 XX% 달성</li>
+                    <li>고객 유지율 달성</li>
+                    <li>연도별 영업 목표 달성</li>
                 </ul>
                 <h3>주요 고객사</h3>
                 <ul>
@@ -711,12 +750,13 @@
         <div class="container">
             <h2>Contact Me</h2>
             <div class="contact-content">
-                <form class="contact-form" onsubmit="handleSubmit(event)">
-                    <input type="text" placeholder="이름" required>
-                    <input type="email" placeholder="이메일" required>
-                    <input type="text" placeholder="제목" required>
-                    <textarea placeholder="메시지를 입력하세요..." required></textarea>
-                    <button type="submit">메시지 보내기</button>
+                <div id="alertMessage"></div>
+                <form id="contactForm" class="contact-form">
+                    <input type="text" id="userName" placeholder="이름" required>
+                    <input type="email" id="userEmail" placeholder="이메일" required>
+                    <input type="text" id="subject" placeholder="제목" required>
+                    <textarea id="message" placeholder="메시지를 입력하세요..." required></textarea>
+                    <button type="submit" id="submitBtn">메시지 보내기</button>
                 </form>
             </div>
         </div>
@@ -731,11 +771,9 @@
         <p>&copy; 2024 My Portfolio. All rights reserved.</p>
     </footer>
     <script>
-        function handleSubmit(event) {
-            event.preventDefault();
-            alert('메시지가 전송되었습니다! (실제 전송 기능 미포함)');
-            event.target.reset();
-        }
+        // EmailJS 초기화
+        // 아래의 YOUR_PUBLIC_KEY를 교체해야 합니다
+        emailjs.init("YOUR_PUBLIC_KEY");
 
         // 모달 열기
         function openModal(modalId) {
@@ -765,6 +803,54 @@
                     });
                 }
             });
+        });
+
+        // 연락처 폼 제출
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const alertDiv = document.getElementById('alertMessage');
+            
+            // 버튼 비활성화 및 로딩 상태
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>보내는 중...';
+
+            // EmailJS 파라미터 설정
+            const templateParams = {
+                to_email: "your-email@gmail.com", // 받을 이메일 주소로 교체
+                from_name: document.getElementById('userName').value,
+                from_email: document.getElementById('userEmail').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+
+            // EmailJS 발송 (YOUR_SERVICE_ID와 YOUR_TEMPLATE_ID를 교체해야 합니다)
+            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+                .then(function(response) {
+                    // 성공
+                    alertDiv.innerHTML = '<div class="alert alert-success">✅ 메시지가 성공적으로 전송되었습니다! 감사합니다.</div>';
+                    document.getElementById('contactForm').reset();
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '메시지 보내기';
+                    
+                    // 3초 후 메시지 제거
+                    setTimeout(() => {
+                        alertDiv.innerHTML = '';
+                    }, 3000);
+                })
+                .catch(function(error) {
+                    // 실패
+                    alertDiv.innerHTML = '<div class="alert alert-error">❌ 메시지 전송에 실패했습니다. 다시 시도해주세요.</div>';
+                    console.error('EmailJS Error:', error);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '메시지 보내기';
+                    
+                    // 5초 후 메시지 제거
+                    setTimeout(() => {
+                        alertDiv.innerHTML = '';
+                    }, 5000);
+                });
         });
     </script>
 </body>
