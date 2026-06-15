@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>포트폴리오 - My Portfolio</title>
-    <!-- EmailJS 라이브러리 -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/index.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -333,67 +331,56 @@
             text-align: center;
         }
         .contact-content {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
         }
-        .contact-form {
+        .contact-intro {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+        .contact-methods {
             display: grid;
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
-        .contact-form input,
-        .contact-form textarea {
-            padding: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: border-color 0.3s;
+        .contact-method {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
         }
-        .contact-form input:focus,
-        .contact-form textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+        .contact-method:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
-        .contact-form textarea {
-            resize: vertical;
-            min-height: 150px;
-        }
-        .contact-form button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.3s, transform 0.3s;
-        }
-        .contact-form button:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-        .contact-form button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        /* 메시지 알림 */
-        .alert {
-            padding: 1rem;
-            border-radius: 5px;
+        .contact-method-icon {
+            font-size: 3rem;
             margin-bottom: 1rem;
-            animation: slideInDown 0.3s ease;
         }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        .contact-method h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
         }
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .contact-method p {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        .contact-method.email {
+            color: #d84315;
+        }
+        .contact-method.linkedin {
+            color: #0077b5;
+        }
+        .contact-method.phone {
+            color: #4caf50;
         }
         /* 풋터 */
         footer {
@@ -453,20 +440,6 @@
                 transform: translateY(0);
             }
         }
-        /* 로딩 스피너 */
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 0.5rem;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
         /* 반응형 */
         @media (max-width: 768px) {
             nav ul {
@@ -499,6 +472,9 @@
             .modal-content {
                 width: 95%;
                 margin: 20% auto;
+            }
+            .contact-methods {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -719,139 +695,4 @@
             </div>
             <div class="modal-body">
                 <p>
-                    Okta의 솔루션을 고객에게 효과적으로 제시하고 구현하기 위해, 
-                    SI 파트너사, 기술 파트너사, 채널 파트너사와의 전략적 협력 관계를 구축하였습니다.
-                </p>
-                <h3>파트너십 구성</h3>
-                <ul>
-                    <li><strong>SI 파트너사:</strong> 고객 요구사항 분석 및 솔루션 구현</li>
-                    <li><strong>기술 파트너사:</strong> 통합 솔루션 개발 및 기술 지원</li>
-                    <li><strong>채널 파트너사:</strong> 시장 확대 및 고객 접점 확보</li>
-                </ul>
-                <h3>주요 성과</h3>
-                <ul>
-                    <li>파트너사를 통한 신규 고객 발굴 및 영업 기회 창출</li>
-                    <li>공동 마케팅 및 세미나를 통한 브랜드 인지도 향상</li>
-                    <li>파트너사 교육 및 역량 강화 프로그램 운영</li>
-                    <li>파트너사 협력을 통한 고객 만족도 및 성공률 향상</li>
-                </ul>
-                <h3>생태계 확대 계획</h3>
-                <ul>
-                    <li>신규 파트너사 모집 및 협력 범위 확대</li>
-                    <li>파트너 프로그램 강화 및 인센티브 확대</li>
-                    <li>기술 통합 및 공동 솔루션 개발</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- 연락처 섹션 -->
-    <section id="contact">
-        <div class="container">
-            <h2>Contact Me</h2>
-            <div class="contact-content">
-                <div id="alertMessage"></div>
-                <form id="contactForm" class="contact-form">
-                    <input type="text" id="userName" placeholder="이름" required>
-                    <input type="email" id="userEmail" placeholder="이메일" required>
-                    <input type="text" id="subject" placeholder="제목" required>
-                    <textarea id="message" placeholder="메시지를 입력하세요..." required></textarea>
-                    <button type="submit" id="submitBtn">메시지 보내기</button>
-                </form>
-            </div>
-        </div>
-    </section>
-    <!-- 풋터 -->
-    <footer>
-        <div class="social-links">
-            <a href="#" target="_blank">GitHub</a>
-            <a href="#" target="_blank">LinkedIn</a>
-            <a href="#" target="_blank">Twitter</a>
-        </div>
-        <p>&copy; 2024 My Portfolio. All rights reserved.</p>
-    </footer>
-    <script>
-        // EmailJS 초기화
-        // 아래의 YOUR_PUBLIC_KEY를 교체해야 합니다
-        emailjs.init("YOUR_PUBLIC_KEY");
-
-        // 모달 열기
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
-        }
-
-        // 모달 닫기
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        // 모달 바깥쪽 클릭 시 닫기
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
-        }
-
-        // 부드러운 스크롤
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // 연락처 폼 제출
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const submitBtn = document.getElementById('submitBtn');
-            const alertDiv = document.getElementById('alertMessage');
-            
-            // 버튼 비활성화 및 로딩 상태
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span>보내는 중...';
-
-            // EmailJS 파라미터 설정
-            const templateParams = {
-                to_email: "your-email@gmail.com", // 받을 이메일 주소로 교체
-                from_name: document.getElementById('userName').value,
-                from_email: document.getElementById('userEmail').value,
-                subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value
-            };
-
-            // EmailJS 발송 (YOUR_SERVICE_ID와 YOUR_TEMPLATE_ID를 교체해야 합니다)
-            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
-                .then(function(response) {
-                    // 성공
-                    alertDiv.innerHTML = '<div class="alert alert-success">✅ 메시지가 성공적으로 전송되었습니다! 감사합니다.</div>';
-                    document.getElementById('contactForm').reset();
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '메시지 보내기';
-                    
-                    // 3초 후 메시지 제거
-                    setTimeout(() => {
-                        alertDiv.innerHTML = '';
-                    }, 3000);
-                })
-                .catch(function(error) {
-                    // 실패
-                    alertDiv.innerHTML = '<div class="alert alert-error">❌ 메시지 전송에 실패했습니다. 다시 시도해주세요.</div>';
-                    console.error('EmailJS Error:', error);
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '메시지 보내기';
-                    
-                    // 5초 후 메시지 제거
-                    setTimeout(() => {
-                        alertDiv.innerHTML = '';
-                    }, 5000);
-                });
-        });
-    </script>
-</body>
-</html>
+                    Okta의 솔루션을 고객에게 효과적으로 제시하고
