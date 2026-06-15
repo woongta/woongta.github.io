@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auth0 로그인 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-box {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+        }
+        button:hover {
+            background: #0052a3;
+        }
+        #log {
+            background: white;
+            border: 2px solid #0066cc;
+            padding: 15px;
+            border-radius: 6px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .success { color: green; }
+        .error { color: red; font-weight: bold; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>🔐 Auth0 로그인 테스트</h1>
+    
+    <div class="test-box">
+        <h2>1️⃣ SDK 로드 테스트</h2>
+        <button onclick="testSDK()">SDK 확인</button>
+        <button onclick="clearLog()">로그 초기화</button>
+    </div>
+
+    <div class="test-box">
+        <h2>2️⃣ Auth0 클라이언트 초기화</h2>
+        <button onclick="initAuth0Test()">클라이언트 생성</button>
+    </div>
+
+    <div class="test-box">
+        <h2>3️⃣ 로그인 테스트</h2>
+        <button onclick="testLogin()">로그인 팝업 열기</button>
+        <button onclick="checkAuth()">인증 상태 확인</button>
+    </div>
+
+    <h2>📋 로그:</h2>
+    <div id="log"></div>
+
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/1.22/auth0-spa-js.production.js"></script>
+    <script>
+        let auth0Client = null;
+        const logDiv = document.getElementById('log');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            logDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function clearLog() {
+            logDiv.innerHTML = '';
+        }
+
+        function testSDK() {
+            log('🔍 Auth0 SDK 확인 중...', 'info');
+            if (typeof auth0 !== 'undefined') {
+                log('✅ Auth0 SDK 로드됨 (성공)', 'success');
+            } else {
+                log('❌ Auth0 SDK 미로드 (실패)', 'error');
+            }
+        }
+
+        async function initAuth0Test() {
+            try {
+                log('⏳ Auth0 클라이언트 생성 중...', 'info');
+                log('Domain: woongta.us.auth0.com', 'info');
+                log('Client ID: PxqP6OFoeLXgr8ibqSEXoJpcU7iDqJ65', 'info');
+
+                auth0Client = await auth0.createAuth0Client({
+                    domain: 'woongta.us.auth0.com',
+                    client_id: 'PxqP6OFoeLXgr8ibqSEXoJpcU7iDqJ65',
+                    redirect_uri: window.location.origin
+                });
+
+                log('✅ Auth0 클라이언트 생성 성공!', 'success');
+
+                const isAuth = await auth0Client.isAuthenticated();
+                log(`인증 상태: ${isAuth ? '로그인됨' : '로그인안됨'}`, 'info');
+
+                if (isAuth) {
+                    const user = await auth0Client.getUser();
+                    log(`사용자: ${JSON.stringify(user)}`, 'success');
+                }
+            } catch (error) {
+                log(`❌ 에러: ${error.message}`, 'error');
+                log(`상세: ${error.toString()}`, 'error');
+            }
+        }
+
+        async function testLogin() {
+            try {
+                if (!auth0Client) {
+                    log('❌ Auth0 클라이언트가 없습니다. 먼저 "클라이언트 생성"을 클릭하세요.', 'error');
+                    return;
+                }
+                log('⏳ 로그인 팝업 열기...', 'info');
+                await auth0Client.loginWithPopup();
+                log('✅ 로그인 성공!', 'success');
+                
+                const user = await auth0Client.getUser();
+                log(`사용자: ${user.name || user.email}`, 'success');
+            } catch (error) {
+                log(`❌ 로그인 에러: ${error.message}`, 'error');
+                log(`코드: ${error.error}`, 'error');
+            }
+        }
+
+        async function checkAuth() {
+            try {
+                if (!auth0Client) {
+                    log('❌ Auth0 클라이언트가 없습니다.', 'error');
+                    return;
+                }
+                const isAuth = await auth0Client.isAuthenticated();
+                log(`🔐 인증 상태: ${isAuth ? '✅ 로그인됨' : '❌ 로그인안됨'}`, isAuth ? 'success' : 'error');
+                
+                if (isAuth) {
+                    const user = await auth0Client.getUser();
+                    log(`사용자 이름: ${user.name}`, 'success');
+                    log(`사용자 이메일: ${user.email}`, 'success');
+                }
+            } catch (error) {
+                log(`❌ 에러: ${error.message}`, 'error');
+            }
+        }
+
+        // 페이지 로드 시 SDK 확인
+        window.addEventListener('load', () => {
+            log('📄 페이지 로드됨', 'info');
+            testSDK();
+        });
+    </script>
+</body>
+</html>
