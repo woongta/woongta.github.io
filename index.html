@@ -10,13 +10,11 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
         }
-
         /* 네비게이션 */
         nav {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -26,7 +24,6 @@
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
         nav .container {
             display: flex;
             justify-content: space-between;
@@ -35,36 +32,30 @@
             margin: 0 auto;
             padding: 0 20px;
         }
-
         nav .logo {
             font-size: 1.8rem;
             font-weight: bold;
             color: white;
         }
-
         nav ul {
             display: flex;
             list-style: none;
             gap: 2rem;
         }
-
         nav a {
             color: white;
             text-decoration: none;
             transition: opacity 0.3s;
         }
-
         nav a:hover {
             opacity: 0.8;
         }
-
         /* 컨테이너 */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-
         /* 헤로 섹션 */
         .hero {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -76,20 +67,46 @@
             align-items: center;
             justify-content: center;
         }
-
-        .hero-content h1 {
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .hero-text h1 {
             font-size: 3.5rem;
             margin-bottom: 1rem;
             animation: slideInDown 0.8s ease;
+            text-align: left;
         }
-
-        .hero-content p {
+        .hero-text p {
             font-size: 1.3rem;
             margin-bottom: 2rem;
             opacity: 0.9;
             animation: slideInUp 0.8s ease 0.2s both;
+            text-align: left;
         }
-
+        .profile-image-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: slideInDown 0.8s ease;
+        }
+        .profile-image {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 5px solid white;
+            object-fit: cover;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+        .profile-image:hover {
+            transform: scale(1.05);
+        }
         .btn {
             display: inline-block;
             padding: 12px 30px;
@@ -102,77 +119,64 @@
             cursor: pointer;
             border: none;
         }
-
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
-
         /* 섹션 공통 */
         section {
             padding: 80px 20px;
         }
-
         section h2 {
             font-size: 2.5rem;
             margin-bottom: 3rem;
             text-align: center;
             color: #333;
         }
-
         /* About 섹션 */
         #about {
             background: #f8f9fa;
         }
-
         .about-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 3rem;
             align-items: center;
         }
-
         .about-text h3 {
             font-size: 1.8rem;
             margin-bottom: 1rem;
             color: #667eea;
         }
-
         .about-text p {
             margin-bottom: 1rem;
             line-height: 1.8;
             color: #666;
         }
-
         .skills {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
             margin-top: 2rem;
         }
-
         .skill-item {
             background: white;
             padding: 1rem;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
         .skill-item strong {
             color: #667eea;
         }
-
         /* 포트폴리오 섹션 */
         #portfolio {
             background: white;
         }
-
         .portfolio-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
         }
-
         .portfolio-item {
             background: #f8f9fa;
             border-radius: 10px;
@@ -180,12 +184,10 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: transform 0.3s, box-shadow 0.3s;
         }
-
         .portfolio-item:hover {
             transform: translateY(-10px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
-
         .portfolio-img {
             width: 100%;
             height: 250px;
@@ -196,28 +198,23 @@
             color: white;
             font-size: 3rem;
         }
-
         .portfolio-content {
             padding: 2rem;
         }
-
         .portfolio-content h3 {
             margin-bottom: 0.5rem;
             color: #333;
         }
-
         .portfolio-content p {
             color: #666;
             font-size: 0.9rem;
             margin-bottom: 1rem;
         }
-
         .tags {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
         }
-
         .tag {
             background: #667eea;
             color: white;
@@ -225,23 +222,19 @@
             border-radius: 20px;
             font-size: 0.8rem;
         }
-
         /* 연락처 섹션 */
         #contact {
             background: #f8f9fa;
             text-align: center;
         }
-
         .contact-content {
             max-width: 600px;
             margin: 0 auto;
         }
-
         .contact-form {
             display: grid;
             gap: 1rem;
         }
-
         .contact-form input,
         .contact-form textarea {
             padding: 1rem;
@@ -250,19 +243,16 @@
             font-family: inherit;
             font-size: 1rem;
         }
-
         .contact-form input:focus,
         .contact-form textarea:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
         }
-
         .contact-form textarea {
             resize: vertical;
             min-height: 150px;
         }
-
         .contact-form button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -274,11 +264,9 @@
             cursor: pointer;
             transition: opacity 0.3s;
         }
-
         .contact-form button:hover {
             opacity: 0.9;
         }
-
         /* 풋터 */
         footer {
             background: #333;
@@ -286,22 +274,18 @@
             text-align: center;
             padding: 2rem;
         }
-
         .social-links {
             margin-bottom: 1rem;
         }
-
         .social-links a {
             color: white;
             margin: 0 1rem;
             text-decoration: none;
             transition: color 0.3s;
         }
-
         .social-links a:hover {
             color: #667eea;
         }
-
         /* 애니메이션 */
         @keyframes slideInDown {
             from {
@@ -313,7 +297,6 @@
                 transform: translateY(0);
             }
         }
-
         @keyframes slideInUp {
             from {
                 opacity: 0;
@@ -324,26 +307,32 @@
                 transform: translateY(0);
             }
         }
-
         /* 반응형 */
         @media (max-width: 768px) {
             nav ul {
                 gap: 1rem;
                 font-size: 0.9rem;
             }
-
-            .hero-content h1 {
-                font-size: 2rem;
+            .hero-content {
+                grid-template-columns: 1fr;
             }
-
+            .hero-text h1 {
+                font-size: 2rem;
+                text-align: center;
+            }
+            .hero-text p {
+                text-align: center;
+            }
+            .profile-image {
+                width: 250px;
+                height: 250px;
+            }
             .about-content {
                 grid-template-columns: 1fr;
             }
-
             .portfolio-grid {
                 grid-template-columns: 1fr;
             }
-
             section h2 {
                 font-size: 2rem;
             }
@@ -363,16 +352,19 @@
             </ul>
         </div>
     </nav>
-
     <!-- 헤로 섹션 -->
     <section class="hero" id="home">
         <div class="hero-content">
-            <h1>안녕하세요! 👋</h1>
-            <p>저는 창의적인 개발자/디자이너입니다</p>
-            <a href="#portfolio" class="btn">포트폴리오 보기</a>
+            <div class="hero-text">
+                <h1>안녕하세요! 👋</h1>
+                <p>저는 창의적인 개발자/디자이너입니다</p>
+                <a href="#portfolio" class="btn">포트폴리오 보기</a>
+            </div>
+            <div class="profile-image-container">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA..." alt="프로필 사진" class="profile-image">
+            </div>
         </div>
     </section>
-
     <!-- About 섹션 -->
     <section id="about">
         <div class="container">
@@ -381,12 +373,12 @@
                 <div class="about-text">
                     <h3>자기소개</h3>
                     <p>
-                        저는 웹 개발과 디자인에 열정을 가진 전문가입니다. 
-                        최신 기술을 활용하여 사용자 경험을 최우선으로 하는 
+                        저는 웹 개발과 디자인에 열정을 가진 전문가입니다.
+                        최신 기술을 활용하여 사용자 경험을 최우선으로 하는
                         프로젝트를 진행하고 있습니다.
                     </p>
                     <p>
-                        다양한 프로젝트 경험을 통해 문제 해결 능력과 
+                        다양한 프로젝트 경험을 통해 문제 해결 능력과
                         창의성을 키워왔으며, 계속해서 성장하고 있습니다.
                     </p>
                 </div>
@@ -411,7 +403,6 @@
             </div>
         </div>
     </section>
-
     <!-- 포트폴리오 섹션 -->
     <section id="portfolio">
         <div class="container">
@@ -429,7 +420,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- 프로젝트 2 -->
                 <div class="portfolio-item">
                     <div class="portfolio-img">💻</div>
@@ -442,7 +432,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- 프로젝트 3 -->
                 <div class="portfolio-item">
                     <div class="portfolio-img">🚀</div>
@@ -458,7 +447,6 @@
             </div>
         </div>
     </section>
-
     <!-- 연락처 섹션 -->
     <section id="contact">
         <div class="container">
@@ -474,7 +462,6 @@
             </div>
         </div>
     </section>
-
     <!-- 풋터 -->
     <footer>
         <div class="social-links">
@@ -484,14 +471,12 @@
         </div>
         <p>&copy; 2024 My Portfolio. All rights reserved.</p>
     </footer>
-
     <script>
         function handleSubmit(event) {
             event.preventDefault();
             alert('메시지가 전송되었습니다! (실제 전송 기능 미포함)');
             event.target.reset();
         }
-
         // 부드러운 스크롤
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
