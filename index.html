@@ -1038,8 +1038,8 @@
         <p>&copy; 2026 Jinwoong Choi. All rights reserved.</p>
     </footer>
 
-    <!-- Auth0 SDK -->
-    <script src="https://cdn.auth0.com/js/auth0-spa-js/1.22/auth0-spa-js.production.js"></script>
+    <!-- Auth0 SDK (jsDelivr CDN 사용 - CORS 문제 해결) -->
+    <script src="https://cdn.jsdelivr.net/npm/auth0-spa-js@2.0.1"></script>
 
     <script>
         // Auth0 설정
@@ -1049,13 +1049,20 @@
         async function initAuth0() {
             try {
                 console.log('Auth0 초기화 중...');
+                
+                // auth0 객체 확인
+                if (typeof auth0 === 'undefined') {
+                    console.error('auth0 객체가 없습니다. SDK를 다시 로드합니다.');
+                    throw new Error('auth0 SDK not loaded');
+                }
+
                 auth0Client = await auth0.createAuth0Client({
                     domain: 'woongta.us.auth0.com',
                     client_id: 'PxqP6OFoeLXgr8ibqSEXoJpcU7iDqJ65',
                     redirect_uri: window.location.origin
                 });
 
-                console.log('Auth0 클라이언트 생성 완료');
+                console.log('✅ Auth0 클라이언트 생성 완료');
 
                 // URL에 code 파라미터가 있으면 로그인 처리
                 if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
@@ -1068,15 +1075,22 @@
                 await updateUI();
             } catch (error) {
                 console.error('Auth0 초기화 오류:', error);
+                console.error('에러 상세:', error.message);
             }
         }
 
         // UI 업데이트
         async function updateUI() {
             try {
+                if (!auth0Client) {
+                    console.error('auth0Client가 없습니다');
+                    return;
+                }
+
                 const isAuthenticated = await auth0Client.isAuthenticated();
                 const loginBtn = document.getElementById('loginBtn');
                 const userProfile = document.getElementById('userProfile');
+                const logoutBtn = document.getElementById('logoutBtn');
 
                 console.log('인증 상태:', isAuthenticated);
 
@@ -1098,23 +1112,37 @@
             }
         }
 
-        // 로그인
-        document.getElementById('loginBtn').addEventListener('click', async () => {
-            try {
-                console.log('로그인 버튼 클릭');
-                await auth0Client.loginWithPopup();
-                await updateUI();
-            } catch (error) {
-                console.error('로그인 오류:', error);
-            }
-        });
+        // DOM 로드 완료 시 이벤트 리스너 추가
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
 
-        // 로그아웃
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            console.log('로그아웃');
-            auth0Client.logout({
-                returnTo: window.location.origin
-            });
+            if (loginBtn) {
+                loginBtn.addEventListener('click', async () => {
+                    try {
+                        console.log('로그인 버튼 클릭');
+                        if (!auth0Client) {
+                            console.error('auth0Client가 없습니다');
+                            return;
+                        }
+                        await auth0Client.loginWithPopup();
+                        await updateUI();
+                    } catch (error) {
+                        console.error('로그인 오류:', error);
+                    }
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    console.log('로그아웃');
+                    if (auth0Client) {
+                        auth0Client.logout({
+                            returnTo: window.location.origin
+                        });
+                    }
+                });
+            }
         });
 
         // 모달 열기
@@ -1148,7 +1176,10 @@
         });
 
         // 페이지 로드 완료 후 Auth0 초기화
-        window.addEventListener('load', initAuth0);
+        window.addEventListener('load', () => {
+            console.log('페이지 로드됨 - Auth0 초기화 시작');
+            initAuth0();
+        });
     </script>
 </body>
 </html>
