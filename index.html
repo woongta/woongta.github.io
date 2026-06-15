@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -527,26 +528,6 @@
             color: #999999;
             font-size: 0.9rem;
         }
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -647,7 +628,6 @@
             </div>
         </div>
     </nav>
-
     <section class="hero" id="home">
         <div class="hero-content">
             <div class="hero-text">
@@ -664,7 +644,6 @@
             </div>
         </div>
     </section>
-
     <section id="about">
         <div class="container">
             <h2>About Me</h2>
@@ -717,7 +696,6 @@
             </div>
         </div>
     </section>
-
     <section id="portfolio">
         <div class="container">
             <h2>Sales Achievements</h2>
@@ -735,7 +713,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="portfolio-item" onclick="openModal('modal2')">
                     <div class="portfolio-img">📈</div>
                     <div class="portfolio-content">
@@ -749,7 +726,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="portfolio-item" onclick="openModal('modal3')">
                     <div class="portfolio-img">🤝</div>
                     <div class="portfolio-content">
@@ -766,7 +742,6 @@
             </div>
         </div>
     </section>
-
     <div id="modal1" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -802,7 +777,6 @@
             </div>
         </div>
     </div>
-
     <div id="modal2" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -836,7 +810,6 @@
             </div>
         </div>
     </div>
-
     <div id="modal3" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -870,7 +843,6 @@
             </div>
         </div>
     </div>
-
     <section id="contact">
         <div class="container">
             <h2>Let's Connect</h2>
@@ -899,7 +871,6 @@
             </div>
         </div>
     </section>
-
     <footer>
         <div class="social-links">
             <a href="https://www.linkedin.com/in/jinwoong-choi-baba0186/" target="_blank">LinkedIn</a>
@@ -910,7 +881,6 @@
 
     <!-- ✅ Auth0 SDK -->
     <script src="https://cdn.jsdelivr.net/npm/auth0-spa-js@2.2.0/dist/auth0-spa-js.production.js"></script>
-
     <script>
         let auth0Client = null;
 
@@ -920,25 +890,26 @@
                 await new Promise(resolve => setTimeout(resolve, 100));
                 retries++;
             }
-
             if (typeof auth0 === 'undefined') {
                 console.error('❌ Auth0 SDK 로드 실패');
                 return;
             }
-
             try {
                 console.log('✅ Auth0 SDK 로드됨');
-
+                
+                // [수정 완료] redirect_uri 설정 값을 authorizationParams 안으로 감싸 구조를 최적화했습니다.
                 auth0Client = await auth0.createAuth0Client({
                     domain: 'woongta.us.auth0.com',
                     client_id: 'PxqP6OFoeLXgr8ibqSEXoJpcU7iDqJ65',
-                    redirect_uri: window.location.origin,
                     useRefreshTokens: true,
-                    cacheLocation: 'localstorage'
+                    cacheLocation: 'localstorage',
+                    authorizationParams: {
+                        redirect_uri: window.location.origin
+                    }
                 });
-
                 console.log('✅ Auth0 Client 생성 완료');
 
+                // 팝업 콜백 대신 리다이렉트 콜백 처리 로직 간소화
                 if (window.location.search.includes('code=')) {
                     await auth0Client.handleRedirectCallback();
                     window.history.replaceState({}, document.title, window.location.pathname);
@@ -947,7 +918,6 @@
 
                 await updateUI();
                 setupEventListeners();
-
             } catch (error) {
                 console.error('❌ Auth0 초기화 오류:', error);
                 alert('로그인 서비스 초기화 실패: ' + error.message);
@@ -959,12 +929,10 @@
                 console.warn('⚠️ auth0Client 없음');
                 return;
             }
-
             try {
                 const isAuthenticated = await auth0Client.isAuthenticated();
                 const loginBtn = document.getElementById('loginBtn');
                 const userProfile = document.getElementById('userProfile');
-
                 if (isAuthenticated) {
                     const user = await auth0Client.getUser();
                     console.log('✅ 로그인 상태 - 사용자:', user.email);
@@ -985,7 +953,6 @@
         function setupEventListeners() {
             const loginBtn = document.getElementById('loginBtn');
             const logoutBtn = document.getElementById('logoutBtn');
-
             if (loginBtn) {
                 console.log('✅ 로그인 버튼 이벤트 리스너 추가');
                 loginBtn.onclick = async function() {
@@ -1005,14 +972,16 @@
                     }
                 };
             }
-
             if (logoutBtn) {
                 console.log('✅ 로그아웃 버튼 이벤트 리스너 추가');
                 logoutBtn.onclick = async function() {
                     try {
                         console.log('🚪 로그아웃...');
+                        // [수정 완료] returnTo 도 최신 규격인 logoutParams 안으로 이동시켰습니다.
                         await auth0Client.logout({
-                            returnTo: window.location.origin
+                            logoutParams: {
+                                returnTo: window.location.origin
+                            }
                         });
                     } catch (error) {
                         console.error('로그아웃 오류:', error);
@@ -1057,9 +1026,9 @@
                 initializeAuth0();
             });
         }
-
         setupSmoothScroll();
         console.log('🚀 스크립트 준비 완료');
     </script>
 </body>
 </html>
+```
