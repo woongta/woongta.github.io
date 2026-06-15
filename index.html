@@ -1038,8 +1038,8 @@
         <p>&copy; 2026 Jinwoong Choi. All rights reserved.</p>
     </footer>
 
-    <!-- Auth0 SDK (jsDelivr CDN 사용 - CORS 문제 해결) -->
-    <script src="https://cdn.jsdelivr.net/npm/auth0-spa-js@2.0.1"></script>
+    <!-- Auth0 SDK 직접 로드 (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/auth0-spa-js@2.0.1/dist/auth0-spa-js.production.js"></script>
 
     <script>
         // Auth0 설정
@@ -1050,10 +1050,10 @@
             try {
                 console.log('Auth0 초기화 중...');
                 
-                // auth0 객체 확인
+                // SDK 로드 확인
                 if (typeof auth0 === 'undefined') {
-                    console.error('auth0 객체가 없습니다. SDK를 다시 로드합니다.');
-                    throw new Error('auth0 SDK not loaded');
+                    console.error('auth0 객체가 없습니다');
+                    return;
                 }
 
                 auth0Client = await auth0.createAuth0Client({
@@ -1075,7 +1075,6 @@
                 await updateUI();
             } catch (error) {
                 console.error('Auth0 초기화 오류:', error);
-                console.error('에러 상세:', error.message);
             }
         }
 
@@ -1090,7 +1089,6 @@
                 const isAuthenticated = await auth0Client.isAuthenticated();
                 const loginBtn = document.getElementById('loginBtn');
                 const userProfile = document.getElementById('userProfile');
-                const logoutBtn = document.getElementById('logoutBtn');
 
                 console.log('인증 상태:', isAuthenticated);
 
