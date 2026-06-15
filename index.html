@@ -3,267 +3,392 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>포트폴리오 - My Portfolio</title>
+    <title>포트폴리오 - Jinwoong Choi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #1a1a1a;
+            background-color: #ffffff;
         }
+        
         /* 네비게이션 */
         nav {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1.5rem 0;
+            background-color: #ffffff;
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #e8e8e8;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
         }
+        
         nav .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 40px;
         }
+        
         nav .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0066cc;
+            letter-spacing: -0.5px;
         }
+        
         nav ul {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 3rem;
         }
+        
         nav a {
-            color: white;
+            color: #1a1a1a;
             text-decoration: none;
-            transition: opacity 0.3s;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
         }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #0066cc;
+            transition: width 0.3s ease;
+        }
+        
         nav a:hover {
-            opacity: 0.8;
+            color: #0066cc;
         }
-        /* 컨테이너 */
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 40px;
         }
+        
         /* 헤로 섹션 */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 100px 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f8ff 100%);
+            padding: 120px 40px;
             text-align: center;
-            min-height: 500px;
+            min-height: 600px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 102, 204, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
         .hero-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 3rem;
+            gap: 4rem;
             align-items: center;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
+        
         .hero-text h1 {
             font-size: 3.5rem;
-            margin-bottom: 1rem;
-            animation: slideInDown 0.8s ease;
-            text-align: left;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #1a1a1a;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
         }
+        
+        .hero-text .highlight {
+            color: #0066cc;
+        }
+        
         .hero-text p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            animation: slideInUp 0.8s ease 0.2s both;
-            text-align: left;
+            font-size: 1.25rem;
+            color: #555555;
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            font-weight: 400;
         }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: #0066cc;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0052a3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: #0066cc;
+            border: 2px solid #0066cc;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #0066cc;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
         .profile-image-container {
-            position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            animation: slideInDown 0.8s ease;
+            position: relative;
         }
+        
         .profile-image {
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            border: 5px solid white;
+            width: 350px;
+            height: 350px;
+            border-radius: 16px;
             object-fit: cover;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            transition: transform 0.3s;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e8e8e8;
+            transition: transform 0.3s ease;
         }
+        
         .profile-image:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: white;
-            color: #667eea;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            border: none;
-        }
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
+        
         /* 섹션 공통 */
         section {
-            padding: 80px 20px;
+            padding: 100px 40px;
         }
+        
         section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 3.5rem;
+            color: #1a1a1a;
             text-align: center;
-            color: #333;
+            letter-spacing: -0.5px;
         }
+        
         /* About 섹션 */
         #about {
-            background: #f8f9fa;
+            background: #ffffff;
         }
+        
         .about-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 3rem;
+            gap: 4rem;
             align-items: center;
         }
+        
         .about-text h3 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-bottom: 1.5rem;
-            color: #667eea;
+            color: #1a1a1a;
+            font-weight: 700;
         }
+        
         .about-text p {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.5rem;
             line-height: 1.9;
-            color: #555;
-            font-size: 1rem;
+            color: #555555;
+            font-size: 1.05rem;
         }
+        
         .experience-timeline {
-            margin-top: 2rem;
+            margin-top: 2.5rem;
         }
+        
         .experience-item {
             display: flex;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #ddd;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e8e8e8;
         }
+        
         .experience-item:last-child {
             border-bottom: none;
         }
+        
         .experience-year {
-            font-weight: bold;
-            color: #667eea;
-            min-width: 60px;
+            font-weight: 700;
+            color: #0066cc;
+            min-width: 80px;
+            font-size: 1rem;
         }
+        
         .experience-detail {
-            margin-left: 1.5rem;
+            margin-left: 2rem;
         }
+        
         .experience-detail strong {
-            color: #333;
+            color: #1a1a1a;
+            font-size: 1.05rem;
+            display: block;
+            margin-bottom: 0.5rem;
         }
+        
         .experience-detail p {
             margin: 0;
             font-size: 0.95rem;
-            color: #666;
+            color: #777777;
         }
+        
         .skills {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 2rem;
+            gap: 1.5rem;
+            margin-top: 3rem;
         }
+        
         .skill-item {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            background: #f9fafb;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #e8e8e8;
+            transition: all 0.3s ease;
         }
+        
         .skill-item:hover {
-            transform: translateY(-5px);
+            background: #ffffff;
+            border-color: #0066cc;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
         }
+        
         .skill-item strong {
-            color: #667eea;
+            color: #1a1a1a;
             display: block;
-            margin-bottom: 0.5rem;
-            font-size: 1.05rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
         }
+        
         .skill-item p {
-            font-size: 0.9rem;
-            color: #666;
+            font-size: 0.95rem;
+            color: #666666;
             margin: 0;
+            line-height: 1.6;
         }
+        
         /* 포트폴리오 섹션 */
         #portfolio {
-            background: white;
+            background: #f9fafb;
         }
+        
         .portfolio-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
         }
+        
         .portfolio-item {
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: #ffffff;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
             cursor: pointer;
+            border: 1px solid #e8e8e8;
         }
+        
         .portfolio-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: #0066cc;
         }
+        
         .portfolio-img {
             width: 100%;
-            height: 250px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 200px;
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 3rem;
         }
+        
         .portfolio-content {
             padding: 2rem;
         }
+        
         .portfolio-content h3 {
-            margin-bottom: 0.5rem;
-            color: #333;
+            margin-bottom: 0.8rem;
+            color: #1a1a1a;
+            font-size: 1.3rem;
+            font-weight: 700;
         }
+        
         .portfolio-content p {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
+            color: #666666;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
+        
         .tags {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
         }
+        
         .tag {
-            background: #667eea;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            background: #e8f0ff;
+            color: #0066cc;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
+        
         /* 모달 */
         .modal {
             display: none;
@@ -276,131 +401,161 @@
             background-color: rgba(0, 0, 0, 0.5);
             animation: fadeIn 0.3s ease;
         }
+        
         .modal-content {
             background-color: white;
             margin: 5% auto;
-            padding: 2rem;
-            border-radius: 10px;
+            padding: 2.5rem;
+            border-radius: 16px;
             width: 90%;
             max-width: 800px;
             max-height: 80vh;
             overflow-y: auto;
             animation: slideDown 0.3s ease;
         }
+        
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 1rem;
+            border-bottom: 2px solid #e8e8e8;
+            padding-bottom: 1.5rem;
         }
+        
         .modal-header h2 {
             margin: 0;
-            color: #667eea;
+            color: #1a1a1a;
+            font-size: 1.8rem;
+            text-align: left;
         }
+        
         .close-btn {
             font-size: 2rem;
-            font-weight: bold;
-            color: #aaa;
+            font-weight: 300;
+            color: #999999;
             cursor: pointer;
             transition: color 0.3s;
+            background: none;
+            border: none;
         }
+        
         .close-btn:hover {
-            color: #000;
+            color: #1a1a1a;
         }
+        
         .modal-body {
-            color: #555;
+            color: #555555;
             line-height: 1.8;
         }
+        
         .modal-body h3 {
-            color: #667eea;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .modal-body ul {
-            margin-left: 1.5rem;
-            color: #666;
-        }
-        .modal-body li {
-            margin-bottom: 0.5rem;
-        }
-        /* 연락처 섹션 */
-        #contact {
-            background: #f8f9fa;
-            text-align: center;
-        }
-        .contact-content {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        .contact-intro {
-            font-size: 1.1rem;
-            color: #555;
-            margin-bottom: 3rem;
-            line-height: 1.8;
-        }
-        .contact-methods {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
+            color: #1a1a1a;
             margin-top: 2rem;
-        }
-        .contact-method {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-decoration: none;
-            color: inherit;
-        }
-        .contact-method:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-        }
-        .contact-method-icon {
-            font-size: 3rem;
             margin-bottom: 1rem;
-        }
-        .contact-method h3 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
+            font-weight: 700;
             font-size: 1.2rem;
         }
+        
+        .modal-body ul {
+            margin-left: 1.5rem;
+            color: #666666;
+        }
+        
+        .modal-body li {
+            margin-bottom: 0.8rem;
+        }
+        
+        /* 연락처 섹션 */
+        #contact {
+            background: linear-gradient(135deg, #ffffff 0%, #f5f8ff 100%);
+            text-align: center;
+        }
+        
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .contact-intro {
+            font-size: 1.2rem;
+            color: #555555;
+            margin-bottom: 3.5rem;
+            line-height: 1.9;
+        }
+        
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .contact-method {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid #e8e8e8;
+        }
+        
+        .contact-method:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: #0066cc;
+        }
+        
+        .contact-method-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-method h3 {
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
         .contact-method p {
-            color: #666;
+            color: #777777;
             font-size: 0.95rem;
             margin: 0;
         }
-        .contact-method.email {
-            color: #d84315;
-        }
-        .contact-method.linkedin {
-            color: #0077b5;
-        }
-        .contact-method.phone {
-            color: #4caf50;
-        }
+        
         /* 풋터 */
         footer {
-            background: #333;
+            background: #1a1a1a;
             color: white;
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 40px;
+            border-top: 1px solid #333333;
         }
+        
         .social-links {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
+        
         .social-links a {
             color: white;
-            margin: 0 1rem;
+            margin: 0 1.5rem;
             text-decoration: none;
             transition: color 0.3s;
+            font-weight: 500;
         }
+        
         .social-links a:hover {
-            color: #667eea;
+            color: #0066cc;
         }
+        
+        footer p {
+            color: #999999;
+            font-size: 0.9rem;
+        }
+        
         /* 애니메이션 */
         @keyframes slideInDown {
             from {
@@ -412,6 +567,7 @@
                 transform: translateY(0);
             }
         }
+        
         @keyframes slideInUp {
             from {
                 opacity: 0;
@@ -422,6 +578,7 @@
                 transform: translateY(0);
             }
         }
+        
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -430,6 +587,7 @@
                 opacity: 1;
             }
         }
+        
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -440,41 +598,77 @@
                 transform: translateY(0);
             }
         }
+        
         /* 반응형 */
         @media (max-width: 768px) {
+            nav .container {
+                padding: 0 20px;
+            }
+            
             nav ul {
-                gap: 1rem;
+                gap: 1.5rem;
                 font-size: 0.9rem;
             }
+            
+            .container {
+                padding: 0 20px;
+            }
+            
+            .hero {
+                padding: 60px 20px;
+                min-height: auto;
+            }
+            
             .hero-content {
                 grid-template-columns: 1fr;
+                gap: 2rem;
             }
+            
             .hero-text h1 {
-                font-size: 2rem;
-                text-align: center;
+                font-size: 2.2rem;
             }
+            
             .hero-text p {
-                text-align: center;
+                font-size: 1rem;
             }
+            
             .profile-image {
-                width: 250px;
-                height: 250px;
+                width: 280px;
+                height: 280px;
             }
+            
             .about-content {
                 grid-template-columns: 1fr;
+                gap: 2rem;
             }
+            
+            .skills {
+                grid-template-columns: 1fr;
+            }
+            
             .portfolio-grid {
                 grid-template-columns: 1fr;
             }
+            
+            section {
+                padding: 60px 20px;
+            }
+            
             section h2 {
                 font-size: 2rem;
             }
+            
             .modal-content {
                 width: 95%;
-                margin: 20% auto;
+                margin: 30% auto;
             }
+            
             .contact-methods {
                 grid-template-columns: 1fr;
+            }
+            
+            footer {
+                padding: 2rem 20px;
             }
         }
     </style>
@@ -483,7 +677,7 @@
     <!-- 네비게이션 -->
     <nav>
         <div class="container">
-            <div class="logo">My Portfolio</div>
+            <div class="logo">Jinwoong Choi</div>
             <ul>
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
@@ -492,20 +686,25 @@
             </ul>
         </div>
     </nav>
+
     <!-- 헤로 섹션 -->
     <section class="hero" id="home">
         <div class="hero-content">
             <div class="hero-text">
-                <h1>안녕하세요! 👋</h1>
-                <p>저는 Okta Identity Korea 에서 Regional Sales Manager 를 맡고 있습니다.</p>
-                <a href="#portfolio" class="btn">포트폴리오 보기</a>
+                <h1>Regional Sales Manager at <span class="highlight">Okta</span></h1>
+                <p>20년 이상의 IT 업계 경험으로 엔터프라이즈 고객을 위한 최적의 디지털 솔루션을 제시합니다.</p>
+                <div class="cta-buttons">
+                    <a href="#portfolio" class="btn btn-primary">포트폴리오 보기</a>
+                    <a href="#contact" class="btn btn-secondary">연락하기</a>
+                </div>
             </div>
             <div class="profile-image-container">
-                <img src="./profile.png" alt="프로필 사진" class="profile-image" 
-                     onerror="this.src='https://via.placeholder.com/300?text=프로필+사진'">
+                <img src="./profile.png" alt="프로필 사진" class="profile-image"
+                     onerror="this.src='https://via.placeholder.com/350?text=프로필+사진'">
             </div>
         </div>
     </section>
+
     <!-- About 섹션 -->
     <section id="about">
         <div class="container">
@@ -514,14 +713,12 @@
                 <div class="about-text">
                     <h3>경력 소개</h3>
                     <p>
-                        저는 IT 업계에서 20년 이상의 다양한 경험을 보유한 세일즈 리더입니다.
-                        엔터프라이즈급 솔루션 판매에서 시작하여, 현재는 클라우드 기반 신원 관리 및 
-                        보안 솔루션의 리더인 Okta에서 Regional Sales Manager로 활동하고 있습니다.
+                        저는 IT 업계에서 20년 이상의 경험을 보유한 엔터프라이즈 세일즈 리더입니다. 
+                        클라우드 기반 신원 관리 및 보안 솔루션의 선두주자인 Okta에서 Regional Sales Manager로 활동하고 있습니다.
                     </p>
                     <p>
-                        다우기술, Oracle, Citrix, Dell Technologies 등 국내외 주요 IT 기업에서의 
-                        풍부한 경험을 바탕으로, 고객의 디지털 트랜스포메이션 과정에서 최적의 솔루션을 
-                        제시하고 장기적인 비즈니스 성과를 창출하는 데 집중하고 있습니다.
+                        다우기술, Oracle, Citrix, Dell Technologies 등 국내외 주요 IT 기업에서의 풍부한 경험을 바탕으로, 
+                        고객의 디지털 트랜스포메이션 과정에서 최적의 솔루션을 제시하고 장기적인 비즈니스 성과를 창출하는 데 집중하고 있습니다.
                     </p>
                     <div class="experience-timeline">
                         <div class="experience-item">
@@ -561,10 +758,11 @@
             </div>
         </div>
     </section>
+
     <!-- 포트폴리오 섹션 -->
     <section id="portfolio">
         <div class="container">
-            <h2>Sales Achievements & Projects</h2>
+            <h2>Sales Achievements</h2>
             <div class="portfolio-grid">
                 <!-- 프로젝트 1 -->
                 <div class="portfolio-item" onclick="openModal('modal1')">
@@ -572,8 +770,7 @@
                     <div class="portfolio-content">
                         <h3>대규모 엔터프라이즈 고객 확보</h3>
                         <p>
-                            금융, 제조, 공공기관 등 주요 산업별 대형 고객사의 
-                            신원 관리 및 보안 솔루션 도입 계약 성사
+                            금융, 제조, 공공기관 등 주요 산업별 대형 고객사의 신원 관리 및 보안 솔루션 도입 계약 성사
                         </p>
                         <div class="tags">
                             <span class="tag">Enterprise Deal</span>
@@ -587,8 +784,7 @@
                     <div class="portfolio-content">
                         <h3>포트폴리오 확대 및 매출 성장</h3>
                         <p>
-                            기존 고객사의 추가 솔루션 도입 및 계약 규모 확대를 통해 
-                            연도별 영업 목표 달성 및 초과 달성
+                            기존 고객사의 추가 솔루션 도입 및 계약 규모 확대를 통해 연도별 영업 목표 달성 및 초과 달성
                         </p>
                         <div class="tags">
                             <span class="tag">Revenue Growth</span>
@@ -602,8 +798,7 @@
                     <div class="portfolio-content">
                         <h3>전략적 파트너십 및 생태계 구축</h3>
                         <p>
-                            SI 파트너사, 기술 파트너사, 채널 파트너사와의 협력 관계 구축으로 
-                            고객 접점 확대 및 공동 사업 기회 창출
+                            SI 파트너사, 기술 파트너사, 채널 파트너사와의 협력 관계 구축으로 고객 접점 확대 및 공동 사업 기회 창출
                         </p>
                         <div class="tags">
                             <span class="tag">Partnership</span>
@@ -620,12 +815,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>🏢 대규모 엔터프라이즈 고객 확보</h2>
-                <span class="close-btn" onclick="closeModal('modal1')">&times;</span>
+                <button class="close-btn" onclick="closeModal('modal1')">&times;</button>
             </div>
             <div class="modal-body">
                 <p>
-                    국내 주요 금융기관, 제조업체, 공공기관 등 엔터프라이즈급 고객사들의 
-                    디지털 전환 과정에서 클라우드 기반 신원 관리 솔루션을 도입하도록 제안하고 계약을 성사시킨 프로젝트입니다.
+                    국내 주요 금융기관, 제조업체, 공공기관 등 엔터프라이즈급 고객사들의 디지털 전환 과정에서 
+                    클라우드 기반 신원 관리 솔루션을 도입하도록 제안하고 계약을 성사시킨 프로젝트입니다.
                 </p>
                 <h3>주요 성과</h3>
                 <ul>
@@ -657,7 +852,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>📈 포트폴리오 확대 및 매출 성장</h2>
-                <span class="close-btn" onclick="closeModal('modal2')">&times;</span>
+                <button class="close-btn" onclick="closeModal('modal2')">&times;</button>
             </div>
             <div class="modal-body">
                 <p>
@@ -692,7 +887,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>🤝 전략적 파트너십 및 생태계 구축</h2>
-                <span class="close-btn" onclick="closeModal('modal3')">&times;</span>
+                <button class="close-btn" onclick="closeModal('modal3')">&times;</button>
             </div>
             <div class="modal-body">
                 <p>
@@ -725,7 +920,7 @@
     <!-- 연락처 섹션 -->
     <section id="contact">
         <div class="container">
-            <h2>Contact Me</h2>
+            <h2>Let's Connect</h2>
             <div class="contact-content">
                 <p class="contact-intro">
                     새로운 기회, 협력, 또는 질문이 있으시면 편하게 연락해주세요. 
@@ -733,24 +928,24 @@
                 </p>
                 <div class="contact-methods">
                     <!-- LinkedIn -->
-                    <a href="https://www.linkedin.com/in/jinwoong-choi-baba0186/" target="_blank" class="contact-method linkedin">
+                    <a href="https://www.linkedin.com/in/jinwoong-choi-baba0186/" target="_blank" class="contact-method">
                         <div class="contact-method-icon">💼</div>
                         <h3>LinkedIn</h3>
-                        <p>메시지 또는 프로필 방문</p>
+                        <p>프로필 방문</p>
                     </a>
-                    
+
                     <!-- Email -->
-                    <a href="mailto:woongta@naver.com" class="contact-method email">
+                    <a href="mailto:woongta@naver.com" class="contact-method">
                         <div class="contact-method-icon">📧</div>
                         <h3>Email</h3>
-                        <p>이메일로 연락하기</p>
+                        <p>이메일 전송</p>
                     </a>
-                    
+
                     <!-- Phone -->
-                    <a href="tel:+82-10-2024-0829" class="contact-method phone">
+                    <a href="tel:+82-10-2024-0829" class="contact-method">
                         <div class="contact-method-icon">📞</div>
                         <h3>Phone</h3>
-                        <p>전화로 연락하기</p>
+                        <p>전화하기</p>
                     </a>
                 </div>
             </div>
@@ -763,8 +958,9 @@
             <a href="https://www.linkedin.com/in/jinwoong-choi-baba0186/" target="_blank">LinkedIn</a>
             <a href="https://github.com/woongta/" target="_blank">GitHub</a>
         </div>
-        <p>&copy; 2026 My Portfolio. All rights reserved.</p>
+        <p>&copy; 2026 Jinwoong Choi. All rights reserved.</p>
     </footer>
+
     <script>
         // 모달 열기
         function openModal(modalId) {
