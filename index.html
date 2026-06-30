@@ -96,6 +96,10 @@
             background-color: #0066cc;
             color: white;
         }
+        .btn-login:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         .btn-logout {
             padding: 8px 20px;
             border-radius: 6px;
@@ -126,6 +130,19 @@
         .user-name {
             font-weight: 500;
             font-size: 0.9rem;
+        }
+        .auth-error-banner {
+            display: none;
+            background-color: #fff3f3;
+            border-bottom: 1px solid #ffd0d0;
+            color: #c92a2a;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 10px 20px;
+        }
+        .auth-error-banner a {
+            color: #c92a2a;
+            font-weight: 700;
         }
         .container {
             max-width: 1200px;
@@ -626,6 +643,9 @@
     </style>
 </head>
 <body>
+    <!-- Auth0 설정 / 환경 문제를 사용자에게 바로 보여주는 배너 -->
+    <div id="authErrorBanner" class="auth-error-banner"></div>
+
     <nav>
         <div class="container">
             <div class="logo">Jinwoong Choi</div>
@@ -637,7 +657,7 @@
                     <li><a href="#contact">Contact</a></li>
                 </ul>
                 <div class="nav-buttons">
-                    <button id="loginBtn" class="btn-login">로그인</button>
+                    <button id="loginBtn" class="btn-login" disabled>로그인 준비 중...</button>
                     <div id="userProfile" class="user-profile" style="display: none;">
                         <img id="userImage" src="" alt="프로필">
                         <span id="userName" class="user-name"></span>
@@ -914,7 +934,34 @@
     <script>
         let auth0Client = null;
 
+        function showAuthError(message) {
+            const banner = document.getElementById('authErrorBanner');
+            banner.innerHTML = message;
+            banner.style.display = 'block';
+            console.error('❌ [Auth0 오류] ' + message.replace(/<[^>]*>/g, ''));
+        }
+
+        function clearAuthError() {
+            const banner = document.getElementById('authErrorBanner');
+            banner.style.display = 'none';
+            banner.innerHTML = '';
+        }
+
         async function initializeAuth0() {
+            // 1) file:// 로 직접 열었는지 먼저 확인 (Auth0는 file:// 에서 동작하지 않음)
+            if (window.location.protocol === 'file:') {
+                showAuthError(
+                    '이 페이지가 <code>file://</code> 로 열려 있어 Auth0 로그인이 동작할 수 없습니다. ' +
+                    '로컬 서버(예: <code>python3 -m http.server</code>)나 실제 도메인으로 접속한 뒤, ' +
+                    '해당 주소를 Auth0 Allowed Callback/Logout/Web Origins URL에 등록해주세요.'
+                );
+                const loginBtn = document.getElementById('loginBtn');
+                loginBtn.textContent = '로그인 (사용 불가)';
+                loginBtn.disabled = true;
+                return;
+            }
+
+            // 2) Auth0 SDK 스크립트 로드 대기
             let retries = 0;
             while (typeof auth0 === 'undefined' && retries < 50) {
                 await new Promise(resolve => setTimeout(resolve, 100));
@@ -922,12 +969,18 @@
             }
 
             if (typeof auth0 === 'undefined') {
-                console.error('❌ Auth0 SDK 로드 실패');
+                showAuthError(
+                    'Auth0 SDK 스크립트를 불러오지 못했습니다. 인터넷 연결 또는 CDN 접근 차단(광고 차단기, 사내 방화벽 등)을 확인해주세요.'
+                );
+                const loginBtn = document.getElementById('loginBtn');
+                loginBtn.textContent = '로그인 (SDK 로드 실패)';
+                loginBtn.disabled = true;
                 return;
             }
 
             try {
                 console.log('✅ Auth0 SDK 로드됨');
+                console.log('ℹ️ 현재 origin:', window.location.origin);
 
                 auth0Client = await auth0.createAuth0Client({
                     domain: 'woongta.us.auth0.com',
@@ -939,18 +992,25 @@
 
                 console.log('✅ Auth0 Client 생성 완료');
 
-                if (window.location.search.includes('code=')) {
+                if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
                     await auth0Client.handleRedirectCallback();
                     window.history.replaceState({}, document.title, window.location.pathname);
                     console.log('✅ 로그인 콜백 처리 완료');
                 }
 
+                clearAuthError();
                 await updateUI();
                 setupEventListeners();
 
             } catch (error) {
                 console.error('❌ Auth0 초기화 오류:', error);
-                alert('로그인 서비스 초기화 실패: ' + error.message);
+                showAuthError(
+                    'Auth0 초기화 중 오류가 발생했습니다: <strong>' + (error.message || error) + '</strong><br>' +
+                    'Auth0 대시보드의 Application 설정(Domain, Client ID, Allowed Callback/Web Origins URL)을 확인해주세요.'
+                );
+                const loginBtn = document.getElementById('loginBtn');
+                loginBtn.textContent = '로그인 (초기화 실패)';
+                loginBtn.disabled = true;
             }
         }
 
@@ -975,10 +1035,13 @@
                 } else {
                     console.log('로그아웃 상태');
                     loginBtn.style.display = 'block';
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = '로그인';
                     userProfile.style.display = 'none';
                 }
             } catch (error) {
                 console.error('UI 업데이트 오류:', error);
+                showAuthError('로그인 상태 확인 중 오류가 발생했습니다: ' + (error.message || error));
             }
         }
 
@@ -989,6 +1052,11 @@
             if (loginBtn) {
                 console.log('✅ 로그인 버튼 이벤트 리스너 추가');
                 loginBtn.onclick = async function() {
+                    if (!auth0Client) {
+                        showAuthError('Auth0 클라이언트가 초기화되지 않았습니다. 페이지를 새로고침해주세요.');
+                        return;
+                    }
+                    clearAuthError();
                     try {
                         console.log('🔐 팝업 로그인 시작...');
                         await auth0Client.loginWithPopup();
@@ -996,11 +1064,17 @@
                         console.log('✅ 팝업 로그인 성공');
                     } catch (error) {
                         console.error('❌ 팝업 로그인 실패:', error);
+                        // 팝업이 차단되었거나 사용자가 닫은 경우 리다이렉트 방식으로 전환
                         try {
                             console.log('⚠️ 리다이렉트 로그인으로 전환...');
                             await auth0Client.loginWithRedirect();
                         } catch (error2) {
-                            alert('로그인 실패: ' + error.message);
+                            console.error('❌ 리다이렉트 로그인도 실패:', error2);
+                            showAuthError(
+                                '로그인을 시작할 수 없습니다: <strong>' + (error2.message || error2) + '</strong><br>' +
+                                '브라우저 팝업 차단을 해제하거나, Auth0 Allowed Callback/Web Origins URL에 현재 주소(' +
+                                window.location.origin + ')가 등록되어 있는지 확인해주세요.'
+                            );
                         }
                     }
                 };
@@ -1016,6 +1090,7 @@
                         });
                     } catch (error) {
                         console.error('로그아웃 오류:', error);
+                        showAuthError('로그아웃 중 오류가 발생했습니다: ' + (error.message || error));
                     }
                 };
             }
