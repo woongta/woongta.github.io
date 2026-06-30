@@ -984,8 +984,10 @@
 
                 auth0Client = await auth0.createAuth0Client({
                     domain: 'woongta.us.auth0.com',
-                    client_id: 'PxqP6OFoeLXgr8ibqSEXoJpcU7iDqJ65',
-                    redirect_uri: window.location.origin,
+                    clientId: 'PxqP6OFoeLXgr8ibqSEXoJpcU7iDqJ65',
+                    authorizationParams: {
+                        redirect_uri: window.location.origin
+                    },
                     useRefreshTokens: true,
                     cacheLocation: 'localstorage'
                 });
@@ -1086,7 +1088,9 @@
                     try {
                         console.log('🚪 로그아웃...');
                         await auth0Client.logout({
-                            returnTo: window.location.origin
+                            logoutParams: {
+                                returnTo: window.location.origin
+                            }
                         });
                     } catch (error) {
                         console.error('로그아웃 오류:', error);
