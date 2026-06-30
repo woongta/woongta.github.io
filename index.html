@@ -144,6 +144,35 @@
             color: #c92a2a;
             font-weight: 700;
         }
+        .inapp-browser-banner {
+            display: none;
+            background-color: #fff9db;
+            border-bottom: 1px solid #ffe066;
+            color: #5c4a00;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 12px 20px;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .inapp-browser-banner.visible {
+            display: flex;
+        }
+        .inapp-browser-btn {
+            background-color: #5c4a00;
+            color: #fff9db;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .inapp-browser-btn:hover {
+            background-color: #3d3100;
+        }
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -643,6 +672,12 @@
     </style>
 </head>
 <body>
+    <!-- 카카오톡 등 인앱 브라우저 안내 배너 -->
+    <div id="inappBrowserBanner" class="inapp-browser-banner">
+        <span>⚠️ 카카오톡 인앱 브라우저에서는 구글/소셜 로그인이 차단됩니다. 외부 브라우저로 열어주세요.</span>
+        <button id="openExternalBrowserBtn" class="inapp-browser-btn">외부 브라우저로 열기</button>
+    </div>
+
     <!-- Auth0 설정 / 환경 문제를 사용자에게 바로 보여주는 배너 -->
     <div id="authErrorBanner" class="auth-error-banner"></div>
 
@@ -657,7 +692,7 @@
                     <li><a href="#contact">Contact</a></li>
                 </ul>
                 <div class="nav-buttons">
-                    <button id="loginBtn" class="btn-login" disabled>로그인 준비 중...</button>
+                    <button id="loginBtn" class="btn-login" disabled>LinkedIn으로 로그인</button>
                     <div id="userProfile" class="user-profile" style="display: none;">
                         <img id="userImage" src="" alt="프로필">
                         <span id="userName" class="user-name"></span>
@@ -934,6 +969,48 @@
     <script>
         let auth0Client = null;
 
+        // ===== 카카오톡 등 인앱 브라우저 감지 및 외부 브라우저로 열기 =====
+        function detectInAppBrowser() {
+            const ua = navigator.userAgent || '';
+            const isKakao = /KAKAOTALK/i.test(ua);
+            const isInstagram = /Instagram/i.test(ua);
+            const isFacebook = /FBAN|FBAV/i.test(ua);
+            const isLine = /Line\//i.test(ua);
+            const isNaver = /NAVER\(/i.test(ua);
+
+            if (!isKakao && !isInstagram && !isFacebook && !isLine && !isNaver) {
+                return;
+            }
+
+            const banner = document.getElementById('inappBrowserBanner');
+            const btn = document.getElementById('openExternalBrowserBtn');
+            const currentUrl = window.location.href;
+
+            banner.classList.add('visible');
+
+            if (isKakao) {
+                // 카카오톡 공식 지원 스킴: 인앱 브라우저 화면을 외부 기본 브라우저로 전환
+                btn.onclick = function () {
+                    location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(currentUrl);
+                };
+            } else {
+                // 그 외 앱은 공식 외부 열기 스킴이 없거나 제각각이라, URL 복사 안내로 대체
+                btn.textContent = '주소 복사하기';
+                btn.onclick = async function () {
+                    try {
+                        await navigator.clipboard.writeText(currentUrl);
+                        alert('주소가 복사되었습니다. Chrome/Safari 같은 브라우저 앱을 열어 붙여넣어 주세요.');
+                    } catch (e) {
+                        prompt('아래 주소를 복사해 외부 브라우저(Chrome/Safari)에 붙여넣어 주세요:', currentUrl);
+                    }
+                };
+            }
+
+            console.warn('⚠️ 인앱 브라우저 감지됨 - 소셜 로그인이 제한될 수 있습니다. UA:', ua);
+        }
+
+        detectInAppBrowser();
+
         function showAuthError(message) {
             const banner = document.getElementById('authErrorBanner');
             banner.innerHTML = message;
@@ -1038,7 +1115,7 @@
                     console.log('로그아웃 상태');
                     loginBtn.style.display = 'block';
                     loginBtn.disabled = false;
-                    loginBtn.textContent = '로그인';
+                    loginBtn.textContent = 'LinkedIn으로 로그인';
                     userProfile.style.display = 'none';
                 }
             } catch (error) {
@@ -1060,8 +1137,12 @@
                     }
                     clearAuthError();
                     try {
-                        console.log('🔐 팝업 로그인 시작...');
-                        await auth0Client.loginWithPopup();
+                        console.log('🔐 LinkedIn 팝업 로그인 시작...');
+                        await auth0Client.loginWithPopup({
+                            authorizationParams: {
+                                connection: 'linkedin'
+                            }
+                        });
                         await updateUI();
                         console.log('✅ 팝업 로그인 성공');
                     } catch (error) {
@@ -1069,7 +1150,11 @@
                         // 팝업이 차단되었거나 사용자가 닫은 경우 리다이렉트 방식으로 전환
                         try {
                             console.log('⚠️ 리다이렉트 로그인으로 전환...');
-                            await auth0Client.loginWithRedirect();
+                            await auth0Client.loginWithRedirect({
+                                authorizationParams: {
+                                    connection: 'linkedin'
+                                }
+                            });
                         } catch (error2) {
                             console.error('❌ 리다이렉트 로그인도 실패:', error2);
                             showAuthError(
