@@ -692,7 +692,7 @@
                     <li><a href="#contact">Contact</a></li>
                 </ul>
                 <div class="nav-buttons">
-                    <button id="loginBtn" class="btn-login" disabled>LinkedIn으로 로그인</button>
+                    <button id="loginBtn" class="btn-login" disabled>Google로 로그인</button>
                     <div id="userProfile" class="user-profile" style="display: none;">
                         <img id="userImage" src="" alt="프로필">
                         <span id="userName" class="user-name"></span>
@@ -1024,6 +1024,39 @@
             banner.innerHTML = '';
         }
 
+        // ===== Auth0/Google 에러 코드를 "어디를 고쳐야 하는지"로 번역 =====
+        function getFriendlyAuthErrorMessage(error) {
+            const code = (error && (error.error || error.code || '')).toString();
+            const desc = (error && (error.error_description || error.message || '')).toString();
+            const combined = (code + ' ' + desc).toLowerCase();
+            const origin = window.location.origin;
+
+            if (combined.includes('redirect_uri_mismatch') || combined.includes('redirect_uri')) {
+                return '리다이렉트 URI가 등록된 값과 다릅니다.<br>' +
+                    '① Google Cloud Console OAuth 클라이언트의 <strong>승인된 리디렉션 URI</strong>에 ' +
+                    '<code>https://woongta.us.auth0.com/login/callback</code> 이 등록돼 있는지 확인하세요.<br>' +
+                    '② Auth0 Application의 <strong>Allowed Callback URLs</strong>에 ' +
+                    '<code>' + origin + '</code> 이 등록돼 있는지 확인하세요.';
+            }
+            if (combined.includes('unauthorized_client') || combined.includes('access_denied') || combined.includes('not_authorized')) {
+                return 'Google 커넥션이 이 애플리케이션에 연결되어 있지 않을 수 있습니다.<br>' +
+                    'Auth0 대시보드 → Connections → Social → Google → <strong>Applications 탭</strong>에서 ' +
+                    '현재 앱이 켜져(ON) 있는지 확인하세요.';
+            }
+            if (combined.includes('cors') || combined.includes('origin')) {
+                return '현재 주소(' + origin + ')가 Auth0의 <strong>Allowed Web Origins</strong>에 등록되어 있지 않을 수 있습니다. ' +
+                    '팝업 로그인은 특히 이 값이 꼭 필요합니다.';
+            }
+            if (combined.includes('invalid_connection') || combined.includes('connection')) {
+                return '커넥션 이름(<code>google-oauth2</code>)이 Auth0 대시보드에 등록된 이름과 다를 수 있습니다. ' +
+                    'Connections → Social → Google 에서 정확한 커넥션 이름을 확인 후 코드의 connection 값과 비교하세요.';
+            }
+            if (combined.includes('scope') || combined.includes('consent')) {
+                return 'Google Cloud Console의 OAuth 동의 화면에 profile/email 스코프가 허용되어 있는지 확인하세요.';
+            }
+            return null;
+        }
+
         async function initializeAuth0() {
             // 1) file:// 로 직접 열었는지 먼저 확인 (Auth0는 file:// 에서 동작하지 않음)
             if (window.location.protocol === 'file:') {
@@ -1063,7 +1096,8 @@
                     domain: 'woongta.us.auth0.com',
                     clientId: 'PxqP6OFoeLXgr8ibqSEXoJpcU7iDqJ65',
                     authorizationParams: {
-                        redirect_uri: window.location.origin
+                        redirect_uri: window.location.origin,
+                        scope: 'openid profile email'
                     },
                     useRefreshTokens: true,
                     cacheLocation: 'localstorage'
@@ -1115,7 +1149,7 @@
                     console.log('로그아웃 상태');
                     loginBtn.style.display = 'block';
                     loginBtn.disabled = false;
-                    loginBtn.textContent = 'LinkedIn으로 로그인';
+                    loginBtn.textContent = 'Google로 로그인';
                     userProfile.style.display = 'none';
                 }
             } catch (error) {
@@ -1137,10 +1171,10 @@
                     }
                     clearAuthError();
                     try {
-                        console.log('🔐 LinkedIn 팝업 로그인 시작...');
+                        console.log('🔐 Google 팝업 로그인 시작...');
                         await auth0Client.loginWithPopup({
                             authorizationParams: {
-                                connection: 'linkedin'
+                                connection: 'google-oauth2'
                             }
                         });
                         await updateUI();
@@ -1152,15 +1186,16 @@
                             console.log('⚠️ 리다이렉트 로그인으로 전환...');
                             await auth0Client.loginWithRedirect({
                                 authorizationParams: {
-                                    connection: 'linkedin'
+                                    connection: 'google-oauth2'
                                 }
                             });
                         } catch (error2) {
                             console.error('❌ 리다이렉트 로그인도 실패:', error2);
+                            const hint = getFriendlyAuthErrorMessage(error2);
                             showAuthError(
                                 '로그인을 시작할 수 없습니다: <strong>' + (error2.message || error2) + '</strong><br>' +
-                                '브라우저 팝업 차단을 해제하거나, Auth0 Allowed Callback/Web Origins URL에 현재 주소(' +
-                                window.location.origin + ')가 등록되어 있는지 확인해주세요.'
+                                (hint ? hint : '브라우저 팝업 차단을 해제하거나, Auth0 Allowed Callback/Web Origins URL에 현재 주소(' +
+                                window.location.origin + ')가 등록되어 있는지 확인해주세요.')
                             );
                         }
                     }
